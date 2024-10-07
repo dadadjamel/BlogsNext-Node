@@ -23,4 +23,4 @@ RUN npm run build
 EXPOSE 4000
 
 # Start the Express server
-CMD ["npm", "start"]
+CMD ["npm", "run", "dev"]

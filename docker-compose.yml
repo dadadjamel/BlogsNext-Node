@@ -4,6 +4,9 @@ services:
     build:
       context: ./frontend/my-app
     container_name: nextjs_frontend
+    volumes:
+      - ./frontend/my-app:/app
+      - /app/node_modules
     ports:
       - "5000:3000"
     depends_on:
@@ -13,5 +16,8 @@ services:
     build:
       context: ./backend
     container_name: node_backend
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
     ports:
       - "4000:4000"
