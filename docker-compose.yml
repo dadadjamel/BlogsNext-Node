@@ -1,0 +1,17 @@
+version: '3.8'
+services:
+  frontend:
+    build:
+      context: ./frontend/my-app
+    container_name: nextjs_frontend
+    ports:
+      - "5000:3000"
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: ./backend
+    container_name: node_backend
+    ports:
+      - "4000:4000"
