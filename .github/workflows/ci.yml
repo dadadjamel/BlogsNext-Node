@@ -10,25 +10,21 @@ on:
       - main
 
 jobs:
-  build:
+  build-backend:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout the repository
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      # Step 2: Install Docker Compose
       - name: Install Docker Compose
         run: |
           sudo apt-get update
           sudo apt-get install -y docker-compose
 
-      # Step 3: Set up Docker Buildx
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      # Step 4: Cache Docker layers to speed up subsequent builds
       - name: Cache Docker layers
         uses: actions/cache@v4
         with:
@@ -37,17 +33,35 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-buildx-
 
-      # Step 5: Build the backend service
       - name: Build Backend
+        run: docker-compose -f docker-compose.yml build backend
+
+  build-frontend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Install Docker Compose
         run: |
-          docker-compose -f docker-compose.yml build backend
+          sudo apt-get update
+          sudo apt-get install -y docker-compose
 
-      # # Step 6: Build the frontend service
-      # - name: Build Frontend
-      #   run: |
-      #     docker-compose -f docker-compose.yml build frontend
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-      # Step 7: Cache Node.js dependencies
+      - name: Cache Docker layers
+        uses: actions/cache@v4
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+
+      - name: Build Frontend
+        run: docker-compose -f docker-compose.yml build frontend
+
       - name: Cache Node.js dependencies
         uses: actions/cache@v4
         with:
@@ -58,12 +72,18 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-modules-
 
-      # # Step 8: Run Backend Tests
-      # - name: Run Backend Tests
-      #   run: |
-      #     docker-compose -f docker-compose.yml run backend npm test
+  run-tests:
+    runs-on: ubuntu-latest
 
-      # Step 9: Run Frontend Tests
-      - name: Run Frontend Tests
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Install Docker Compose
         run: |
-          docker-compose -f docker-compose.yml run frontend npm test
+          sudo apt-get update
+          sudo apt-get install -y docker-compose
+
+      - name: Run Frontend Tests
+        run: docker-compose -f docker-compose.yml run frontend npm test
+
