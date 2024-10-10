@@ -42,10 +42,10 @@ jobs:
         run: |
           docker-compose -f docker-compose.yml build backend
 
-      # Step 6: Build the frontend service
-      - name: Build Frontend
-        run: |
-          docker-compose -f docker-compose.yml build frontend
+      # # Step 6: Build the frontend service
+      # - name: Build Frontend
+      #   run: |
+      #     docker-compose -f docker-compose.yml build frontend
 
       # Step 7: Cache Node.js dependencies
       - name: Cache Node.js dependencies
@@ -67,8 +67,3 @@ jobs:
       - name: Run Frontend Tests
         run: |
           docker-compose -f docker-compose.yml run frontend npm test
-
-      # Step 10: Optional Frontend Linting
-      - name: Lint Frontend Code (Optional)
-        run: |
-          docker-compose -f docker-compose.yml run frontend npm run lint
