@@ -1,4 +1,4 @@
-name : CI pipeline
+name: CI Pipeline
 
 # Trigger the pipeline on pushes and pull requests to the main branch
 on:
@@ -11,62 +11,64 @@ on:
 
 jobs:
   build:
-    name: Build
     runs-on: ubuntu-latest
-    
-    # Define Docker as a service to enable building and running containers
-    services:
-      docker:
-        image: docker:24.0.2 # Latest stable version of Docker
-        options: --privileged
-    
 
     steps:
-     # Step 1: Checkout the repository
-     - name: Checkout
-       uses: actions/checkout@v4
-      
-    # Step 2: Set up Docker Buildx for building Docker images
-     - name: Set up Docker Buildx
-       uses: docker/setup-buildx-action@v3
-    
-    # Step 3: Set up cache for Docker layers to speed up subsequent builds
-     - name: Cache Docker layers
-       uses: actions/cache@v4
-       with:
-         path: /tmp/.buildx-cache
-         key: ${{ runner.os }}-buildx-${{ github.sha }}
-         restore-keys: |
-           ${{ runner.os }}-buildx-
-     
-      # Step 4: Build the backend service
-     - name: Build Backend
-       run: |
+      # Step 1: Checkout the repository
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # Step 2: Install Docker Compose
+      - name: Install Docker Compose
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker-compose
+
+      # Step 3: Set up Docker Buildx
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # Step 4: Cache Docker layers to speed up subsequent builds
+      - name: Cache Docker layers
+        uses: actions/cache@v4
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+
+      # Step 5: Build the backend service
+      - name: Build Backend
+        run: |
           docker-compose -f docker-compose.yml build backend
 
-      # Step 5: Build the frontend service
-     - name: Build Frontend
-       run: |
+      # Step 6: Build the frontend service
+      - name: Build Frontend
+        run: |
           docker-compose -f docker-compose.yml build frontend
-        
-      # Step 6: Set up cache for Node.js dependencies for both backend and frontend services
-     - name: Cache Node.js dependencies
-       uses: actions/cache@v4
-       with:
-         path: |
-          ./backend/node_modules
-          ./frontend/my-app/node_modules
-         key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-         restore-keys: |
-           ${{ runner.os }}-nodemodule-
 
-      # Step 7: Run Backend Tests
-     - name: Run Backend Tests
-       run: |
-          docker-compose -f docker-compose.yml run --rm backend npm run test
+      # Step 7: Cache Node.js dependencies
+      - name: Cache Node.js dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ./backend/node_modules
+            ./frontend/my-app/node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-modules-
 
-      # Step 8: Run Frontend Tests
-     - name: Run Frontend Tests
-       run: |
-          docker-compose -f docker-compose.yml run --rm frontend npm run test
+      # Step 8: Run Backend Tests
+      - name: Run Backend Tests
+        run: |
+          docker-compose -f docker-compose.yml run backend npm test
 
+      # Step 9: Run Frontend Tests
+      - name: Run Frontend Tests
+        run: |
+          docker-compose -f docker-compose.yml run frontend npm test
+
+      # Step 10: Optional Frontend Linting
+      - name: Lint Frontend Code (Optional)
+        run: |
+          docker-compose -f docker-compose.yml run frontend npm run lint
