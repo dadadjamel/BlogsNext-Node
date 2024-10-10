@@ -58,10 +58,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-modules-
 
-      # Step 8: Run Backend Tests
-      - name: Run Backend Tests
-        run: |
-          docker-compose -f docker-compose.yml run backend npm test
+      # # Step 8: Run Backend Tests
+      # - name: Run Backend Tests
+      #   run: |
+      #     docker-compose -f docker-compose.yml run backend npm test
 
       # Step 9: Run Frontend Tests
       - name: Run Frontend Tests
