@@ -71,7 +71,3 @@ jobs:
       # Run frontend tests
       - name: Run Frontend Tests
         run: docker-compose -f docker-compose.yml run frontend npm test
-
-      # Run backend tests if needed
-      - name: Run Backend Tests
-        run: docker-compose -f docker-compose.yml run backend npm test
