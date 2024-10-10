@@ -20,7 +20,7 @@ export const getBlogById = (req: Request, res: Response) => {
   } else {
     res.status(404).json({ message: 'Blog not found' });
   }
-}
+};
 
 // delete blog by id
 export const deleteBlogById = (req: Request, res: Response) => {
@@ -32,4 +32,5 @@ export const deleteBlogById = (req: Request, res: Response) => {
   } else {
     res.status(404).json({ message: 'Blog not found' });
   }
-}
+};
+
