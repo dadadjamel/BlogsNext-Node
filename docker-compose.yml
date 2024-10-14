@@ -25,3 +25,26 @@ services:
       - NODE_ENV=development
     ports:
       - "4000:4000"
+
+# version: '3.8'
+
+# services:
+#   frontend:
+#     build:
+#       context: ./frontend
+#     container_name: nextjs_frontend
+#     ports:
+#       - "3000:80"  # Nginx will serve the app on port 80 (public access on 3000)
+#     depends_on:
+#       - backend
+#     environment:
+#       - NODE_ENV=production
+
+#   backend:
+#     build:
+#       context: ./backend
+#     container_name: node_backend
+#     ports:
+#       - "4000:4000"  # Keep backend on port 4000
+#     environment:
+#       - NODE_ENV=production
