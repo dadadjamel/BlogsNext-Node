@@ -1,50 +1,48 @@
-version: '3.8'
-services:
-  frontend:
-    build:
-      context: ./frontend/my-app
-    container_name: nextjs_frontend
-    volumes:
-      - ./frontend/my-app:/app
-      - /app/node_modules
-    ports:
-      - "5000:3000"
-    depends_on:
-      - backend
-    environment:
-      - NODE_ENV=development
-
-  backend:
-    build:
-      context: ./backend
-    container_name: node_backend
-    volumes:
-      - ./backend:/app
-      - /app/node_modules
-    environment:
-      - NODE_ENV=development
-    ports:
-      - "4000:4000"
-
 # version: '3.8'
-
 # services:
 #   frontend:
 #     build:
-#       context: ./frontend
+#       context: ./frontend/my-app
 #     container_name: nextjs_frontend
+#     volumes:
+#       - ./frontend/my-app:/app
+#       - /app/node_modules
 #     ports:
-#       - "3000:80"  # Nginx will serve the app on port 80 (public access on 3000)
+#       - "5000:3000"
 #     depends_on:
 #       - backend
 #     environment:
-#       - NODE_ENV=production
+#       - NODE_ENV=development
 
 #   backend:
 #     build:
 #       context: ./backend
 #     container_name: node_backend
-#     ports:
-#       - "4000:4000"  # Keep backend on port 4000
+#     volumes:
+#       - ./backend:/app
+#       - /app/node_modules
 #     environment:
-#       - NODE_ENV=production
+#       - NODE_ENV=development
+#     ports:
+#       - "4000:4000"
+
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ./frontend/my-app
+    container_name: nextjs_frontend
+    ports:
+      - "3000:3000"  # Nginx will proxy traffic to this port
+    environment:
+      - NODE_ENV=production
+
+  backend:
+    build:
+      context: ./backend
+    container_name: node_backend
+    ports:
+      - "4000:4000"  # Nginx will proxy traffic to this port
+    environment:
+      - NODE_ENV=production
